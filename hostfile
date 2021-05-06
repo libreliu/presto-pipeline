@@ -1,4 +1,4 @@
 # remote host port slots
 # local slots
-remote 127.0.0.1 11451 4
+remote 127.0.0.1 11451 16
 #local 4

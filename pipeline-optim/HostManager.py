@@ -11,6 +11,12 @@ class HostManager:
         self.local_executors = []
         self.executor_slots = {}
 
+    def all_executors(self):
+        return self.remote_executors + self.local_executors
+    
+    def get_slot(self, executor):
+        return self.executor_slots[executor]
+
     def add_local(self, slots):
         logger.info(f"Added local executor, slots={slots}")
         executor = LocalExecutor()
