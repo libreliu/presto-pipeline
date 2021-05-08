@@ -4,7 +4,7 @@ FROM presto-dev:1
 #ADD ./pipeline-optim/RemoteExecutor.py /presto-data/
 #ADD ./pipeline-optim/PrestoSifting.py /presto-data/
 #ADD ./TestData /presto-data/
-RUN ln -s /usr/bin/python3 /usr/bin/python
+#RUN ln -s /usr/bin/python3 /usr/bin/python
 
 WORKDIR /presto-data
 
