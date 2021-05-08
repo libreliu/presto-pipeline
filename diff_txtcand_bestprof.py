@@ -7,11 +7,11 @@ rightdir = sys.argv[2]
 cwd = os.getcwd()
 
 os.chdir(leftdir)
-all_file_left = glob.glob("*.*")
+all_file_left = glob.glob("*.bestprof") + glob.glob("*.txtcand")
 os.chdir(cwd)
 
 os.chdir(rightdir)
-all_file_right = glob.glob("*.*")
+all_file_right = glob.glob("*.bestprof") + glob.glob("*.txtcand")
 os.chdir(cwd)
 
 error = False
