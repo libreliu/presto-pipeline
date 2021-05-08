@@ -95,7 +95,8 @@ if __name__ == '__main__':
             'DM': cand.DM,
             'filename': cand.filename,
             'candnum': cand.candnum,
-            'DMstr': cand.DMstr
+            'DMstr': cand.DMstr,
+            'p': cand.p
         })
 
     print("JSON_BEGIN")

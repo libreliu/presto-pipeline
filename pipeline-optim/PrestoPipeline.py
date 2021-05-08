@@ -216,12 +216,22 @@ async def pipeline(fbfilename, hostfilename, workdir_prefix, rootname, maxDM, Ns
         )
 
     for i, cand in enumerate(cands):
-        foldcmd = "cd %(workdir)s && prepfold -dm %(dm)f -accelcand %(candnum)d -accelfile %(accelfile)s %(datfile)s -noxwin" % {
+        # foldcmd = "cd %(workdir)s && prepfold -dm %(dm)f -accelcand %(candnum)d -accelfile %(accelfile)s %(datfile)s -noxwin" % {
+        #     'workdir': workdir,
+        #     'dm': cand['DM'],
+        #     'accelfile': cand['filename'] + '.cand',
+        #     'candnum': cand['candnum'],
+        #     'datfile': ('%s_DM%s.dat' % (rootname, cand['DMstr']))
+        # }
+
+        foldcmd = "cd %(workdir)s && prepfold -n %(Nint)d -nsub %(Nsub)d -dm %(dm)f -p %(period)f %(filfile)s -o %(outfile)s -noxwin -nodmsearch" % {
             'workdir': workdir,
+            'Nint': Nint,
+            'Nsub': Nsub,
             'dm': cand['DM'],
-            'accelfile': cand['filename'] + '.cand',
-            'candnum': cand['candnum'],
-            'datfile': ('%s_DM%s.dat' % (rootname, cand['DMstr']))
+            'period': cand['p'],
+            'filfile': f"../{fbfilename}",
+            'outfile': rootname + '_DM' + cand['DMstr']
         }
 
         cand_task = stage_2_task_executor.add_task(f"cand_{i}", [], [foldcmd], 1)
