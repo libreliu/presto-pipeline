@@ -6,6 +6,7 @@ import asyncio
 import logging
 import datetime
 import json
+import sys
 import numpy as np
 from functools import reduce
 from RemoteExecutor import ExecutorClient
@@ -70,10 +71,6 @@ def parse_accel_sift(output):
     return json.loads(output[start:end].strip())
 
 async def pipeline(fbfilename, hostfilename, workdir_prefix, rootname, maxDM, Nsub, Nint, Tres, zmax):
-    logging.basicConfig(
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S',
-        level=logging.DEBUG
-    )
 
     host_manager = HostManager.from_hostfile(hostfilename)
     base_executor = host_manager.get_base_executor()
@@ -242,8 +239,17 @@ async def pipeline(fbfilename, hostfilename, workdir_prefix, rootname, maxDM, Ns
 
 
 if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print("Usage: PrestoPipeline.py filterbank_filename")
+
+    logging.basicConfig(
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S',
+        level=logging.INFO
+    )
+
+    logger.info(f"Run with: filfile={sys.argv[1]}")
     asyncio.run(pipeline(
-        "GBT_Lband_PSR.fil",
+        sys.argv[1],
         'hostfile',
         'workdir',
         'Sband',

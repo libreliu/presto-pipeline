@@ -1,3 +1,4 @@
 __pycache__/
 TestData/**
 !TestData/.gitkeep
+workdir_*/
