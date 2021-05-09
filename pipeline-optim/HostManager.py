@@ -1,5 +1,6 @@
 import asyncio, logging
 
+from functools import reduce
 from RemoteExecutor import ExecutorClient
 from LocalExecutor import LocalExecutor
 
@@ -16,6 +17,9 @@ class HostManager:
     
     def get_slot(self, executor):
         return self.executor_slots[executor]
+
+    def total_slots(self):
+        return reduce(lambda x, y: x + y, self.executor_slots.values())
 
     def add_local(self, slots):
         logger.info(f"Added local executor, slots={slots}")

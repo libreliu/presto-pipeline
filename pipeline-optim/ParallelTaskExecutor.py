@@ -18,6 +18,8 @@ class ParallelTask:
         self.actions = actions
         self.successors = []
         self.slots_required = slots_required
+        
+        self.running_core = None
 
     def __repr__(self):
         return f"Task #{self.uuid}"
@@ -44,6 +46,9 @@ class ParallelRunner:
 
         self.closing = False
 
+        self.available_cores = set([i for i in range(0, self.num_slots)])
+        print(f"available_cores: {self.available_cores}")
+
     def __repr__(self):
         return f"Runner #{self.uuid}"
 
@@ -59,9 +64,25 @@ class ParallelRunner:
         """
         task_inst: ParallelTask
         """
+        core = None
+        if self.dispatch_hint['bind_core']:
+            for possible_guess in self.dispatch_hint['affinity_priority']:
+                if possible_guess in self.available_cores:
+                    self.available_cores.remove(possible_guess)
+                    core = possible_guess
+                    break
+        assert(core is not None)
+
         for action in task_inst.actions:
-            retcode, stdout = await self.executor_inst.execute(action)
-            logger.debug(f"[{action}], retcode={retcode}, output={stdout}")
+            if self.dispatch_hint['bind_core']:
+                cmdExecuted = f"taskset -c {core} bash -c '{action}'"
+                retcode, stdout = await self.executor_inst.execute(cmdExecuted)
+                self.available_cores.add(core)
+            else:
+                cmdExecuted = action
+                retcode, stdout = await self.executor_inst.execute(cmdExecuted)
+
+            logger.debug(f"[{cmdExecuted}], retcode={retcode}, output={stdout}")
 
     async def wait_for_event_helper(self):
         await self.notification_event.wait()
@@ -308,13 +329,14 @@ async def test():
         level=logging.DEBUG
     )
 
-    executors = [LocalExecutor() for i in range(0,5)]
+    executors = [LocalExecutor() for i in range(0,1)]
     task_executor = ParallelTaskExecutor()
     for executor in executors:
-        task_executor.add_runner("", executor, 1)
+        # last one the highest priority
+        task_executor.add_runner({"affinity_priority": [0,5,1,4,2,3], "bind_core": True}, executor, 6)
     
-    task_a = task_executor.add_task("task_a", [], ['echo -n "A"'], 1)
-    task_b = task_executor.add_task("task_b", [], ['echo -n "B"'], 1)
+    task_a = task_executor.add_task("task_a", [], ['echo -n "A" && sleep 1'], 1)
+    task_b = task_executor.add_task("task_b", [], ['echo -n "B" && sleep 1'], 1)
     task_c = task_executor.add_task("task_c", [task_a], ['echo -n "C"'], 1)
     task_d = task_executor.add_task("task_d", [task_b], ['echo -n "D"'], 1)
 
