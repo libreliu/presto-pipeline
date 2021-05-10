@@ -23,7 +23,7 @@ def realfft_normal(hostfile, duration):
         import shutil
         shutil.rmtree(dname)
     os.mkdir(dname)
-    show_time(os.system, f"realfft_normal_{hname}", f"python3 ./pipeline-optim/PrestoRealfftContest.py {dname} /presto-contest/B1516+02_{duration}_2bit/input/ {hostfile}")
+    show_time(os.system, f"realfft_normal_{hname}_{duration}", f"python3 ./pipeline-optim/PrestoRealfftContest.py {dname} /presto-contest/B1516+02_{duration}_2bit/input/ {hostfile}")
 
 def accelsearch_normal(hostfile, duration):
     hname = pretty_name(hostfile)
