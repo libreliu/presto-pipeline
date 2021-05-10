@@ -75,7 +75,9 @@ class ParallelRunner:
 
         for action in task_inst.actions:
             if self.dispatch_hint['bind_core']:
-                cmdExecuted = f"taskset -c {core} bash -c '{action}'"
+                # cmdExecuted = f"taskset -c {core} bash -c '{action}'"
+                # retcode, stdout = await self.executor_inst.execute(cmdExecuted)
+                cmdExecuted = f"{action}"
                 retcode, stdout = await self.executor_inst.execute(cmdExecuted)
                 self.available_cores.add(core)
             else:
