@@ -1,0 +1,7 @@
+# remote host port slots affinity
+# local slots
+local 16 0:2:4:6:8:10:12:14:1:3:5:7:9:11:13:15
+#remote ustc2 11451 64
+#remote ustc3 11451 64
+#remote ustc4 11451 64
+#local 4
